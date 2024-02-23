@@ -40,6 +40,7 @@ async function run() {
 
     const doctorsCollection = client.db('doctordb').collection('doctors')
     const appointCollection = client.db('doctordb').collection('appoints')
+    const usersCollection = client.db('doctordb').collection('users')
 
 
 //normal get doctors
@@ -57,6 +58,30 @@ app.get('/doctors/:id', async(req, res)=>{
     res.send(result);
   });
 
+  //normal get appoints
+app.get('/appoints', async(req, res)=>{
+  const cursor = appointCollection.find()
+  const result = await cursor.toArray();
+  res.send(result)
+})
+
+  //normal get users
+app.get('/users', async(req, res)=>{
+  const cursor = usersCollection.find()
+  const result = await cursor.toArray();
+  res.send(result)
+})
+
+// get role users 
+app.get('/roleusers', async(req, res)=>{
+  let query = {};
+  if(req.query?.email){
+    query = {email: req.query.email}
+  }
+  const result = await usersCollection.find(query).toArray();
+  res.send(result)
+})
+
   // post appoints
   app.post('/appoints', async(req, res)=>{
     const usersdata = req.body;
@@ -65,6 +90,17 @@ app.get('/doctors/:id', async(req, res)=>{
     res.send(result)
   });
 
+  // post users 
+  app.post('/users', async(req, res)=>{
+    const user = req.body;
+    const query = {email: user.email}
+    const existingUser = await usersCollection.findOne(query);
+    if(existingUser){
+      return res.send({message: 'user already exists'})
+    }
+    const result = await usersCollection.insertOne(user)
+    res.send(result)
+  });
 
 
     await client.connect();
