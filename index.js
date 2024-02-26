@@ -2,22 +2,18 @@ const express = require('express');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
-const app = express()
+const app = express();
 const port = process.env.PORT || 5000
 
 
 // middleware
-app.use(cors())
+
+const corsOptions = {
+  origin: "*",
+  optionsSuccessStatus : 200,
+}
+app.use(cors(corsOptions));
 app.use(express.json());
-
-
-// doctorDB
-// DuMkWf5WDsL7baxR
-
-
-
-
-
 
 
 
@@ -103,7 +99,7 @@ app.get('/roleusers', async(req, res)=>{
   });
 
 
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
